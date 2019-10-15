@@ -23,7 +23,7 @@
 
 ## About The Project
 
-This is a sample REST API for a restaurant ordering system. It supports various operations such as making an order and viewing placed orders. Aggregation functions such as finding the total cost of orders for a restaurant or the average quantity of items ordered are also available. Please refer [here] for detailed documentation.
+This is a sample REST API for a restaurant ordering system. It supports various operations such as making an order and viewing placed orders. Aggregation functions such as finding the total cost of orders for a restaurant or the average quantity of items ordered are also available. Please refer to the [REST API documentation](#rest-api-documentation) for more detailed documentation.
 
 This project was built using:
 
