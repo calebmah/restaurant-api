@@ -68,6 +68,8 @@ Installation of the relevant packages can be done using [conda](https://docs.con
     python manage.py migrate
     ```
 
+5. Create a `.env` file that contains your secret key. This key is used by django to secure signed data. An example file [`.env.example`](.env.example) is provided for reference.
+
 ## Usage
 
 This section contains information on frequent actions required for this project.
