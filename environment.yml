@@ -1,0 +1,39 @@
+name: django
+channels:
+  - anaconda
+  - conda-forge
+  - defaults
+dependencies:
+  - asn1crypto=0.24.0=py36_1003
+  - astroid=2.3.1=py36_0
+  - ca-certificates=2019.9.11=hecc5488_0
+  - certifi=2019.9.11=py36_0
+  - cffi=1.12.3=py36hb32ad35_0
+  - click=7.0=py_0
+  - colorama=0.4.1=py36_0
+  - cryptography=2.7=py36hb32ad35_0
+  - django=2.2.5=py36_1
+  - djangorestframework=3.10.3=py_0
+  - djangorestframework-jwt=1.11.0=py_0
+  - idna=2.8=py36_1000
+  - isort=4.3.21=py36_0
+  - lazy-object-proxy=1.4.2=py36he774522_0
+  - mccabe=0.6.1=py36_1
+  - openssl=1.1.1c=hfa6e2cd_0
+  - pip=19.2.3=py36_0
+  - pycparser=2.19=py36_1
+  - pyjwt=1.7.1=py_0
+  - pylint=2.4.2=py36_0
+  - python=3.6.9=h5500b2f_0
+  - python-dotenv=0.10.3=py_0
+  - pytz=2019.2=py_0
+  - setuptools=41.2.0=py36_0
+  - six=1.12.0=py36_1000
+  - sqlite=3.29.0=he774522_0
+  - sqlparse=0.3.0=py_0
+  - typed-ast=1.4.0=py36he774522_0
+  - vc=14.1=h0510ff6_4
+  - vs2015_runtime=14.16.27012=hf0eaf9b_0
+  - wheel=0.33.6=py36_0
+  - wincertstore=0.2=py36h7fe50ca_0
+  - wrapt=1.11.2=py36he774522_0
