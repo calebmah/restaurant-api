@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Avg, Sum
 from django.shortcuts import render
 from rest_framework import generics, permissions
 from rest_framework.response import Response
@@ -18,70 +19,16 @@ class OrdersListCreateView(generics.ListCreateAPIView):
     serializer_class = OrderSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
-    def post(self, request, *args, **kwargs):
-        restaurant=request.data.get("restaurant","")
-        quantity=request.data.get("quantity","")
-        item=request.data.get("item","")
-        comments=request.data.get("comments","")
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
-        if not restaurant or not quantity or not item:
-            return Response(
-                data={
-                    "message": "restaurant, quantity and item are required"
-                },
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        try:
-            restaurant = Restaurants.objects.get(name=restaurant)
-            item = MenuItems.objects.get(name=item)
-            quantity = int(quantity)
-        except ObjectDoesNotExist:
-            return Response(
-                    data={
-                        "message": "restaurant or item not valid"
-                    },
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-        except:
-            return Response(
-                    data={
-                        "message": "Invalid data"
-                    },
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-        
-        order = Orders.objects.create(
-            restaurant=restaurant,
-            quantity=quantity,
-            item=item,
-            comments=comments,
-        )
-        return Response(
-            data=OrderSerializer(order).data,
-            status=status.HTTP_201_CREATED
-        )
-
-class OrdersRetrieveView(generics.RetrieveUpdateDestroyAPIView):
+class OrdersRetrieveView(generics.RetrieveAPIView):
     """
     GET orders/:pk/
     """    
     queryset = Orders.objects.all()
     serializer_class = OrderSerializer
     permission_classes = (permissions.IsAuthenticated,)
-
-    def get(self, request, *args, **kwargs):
-        try:
-            order = self.queryset.get(pk=kwargs["pk"])
-            return Response(OrderSerializer(order).data)
-        except Orders.DoesNotExist:
-            return Response(
-                data={
-                    "message": "Order with id: {} does not exist".format(kwargs["pk"])
-                },
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-    # TODO: Update and Delete
 
 class OrdersRestaurantListView(generics.ListAPIView):
     """
@@ -101,7 +48,7 @@ class OrdersRestaurantListView(generics.ListAPIView):
         except Restaurants.DoesNotExist:
             return Response(
                 data={
-                    "message": "Restaurants with name: {} does not exist".format(kwargs["restaurant"])
+                    "message": f"Restaurant with name: {kwargs['restaurant']} does not exist"
                 },
                 status=status.HTTP_404_NOT_FOUND
             )
@@ -111,12 +58,11 @@ class OrdersCustomerListView(generics.ListAPIView):
     """
     GET orders/customer/:customer
     """
-    queryset = Orders.objects.all()
     serializer_class = OrderSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self): 
-        queryset = self.queryset.filter(user=self.kwargs["customer"])
+        queryset = Orders.objects.filter(user=self.kwargs["customer"])
         return queryset
 
     def get(self, request, *args, **kwargs):
@@ -125,7 +71,7 @@ class OrdersCustomerListView(generics.ListAPIView):
         except User.DoesNotExist:
             return Response(
                 data={
-                    "message": "Customer with id: {} does not exist".format(kwargs["customer"])
+                    "message": f"Customer with id: {kwargs['customer']} does not exist"
                 },
                 status=status.HTTP_404_NOT_FOUND
             )
@@ -142,8 +88,8 @@ class CostRetrieveView(generics.RetrieveAPIView):
     def get(self, request, *args, **kwargs):
         try:
             Restaurants.objects.get(name=self.kwargs["restaurant"])
-            queryset = self.queryset.filter(restaurant=self.kwargs["restaurant"])
-            cost = sum([query.total_price for query in queryset])
+            queryset = self.get_queryset().filter(restaurant=self.kwargs["restaurant"])
+            cost = queryset.aggregate(Sum("total_price")).get("total_price__sum")
             return Response(
                 data={
                     "cost": cost
@@ -153,7 +99,7 @@ class CostRetrieveView(generics.RetrieveAPIView):
         except Restaurants.DoesNotExist:
             return Response(
                 data={
-                    "message": "Restaurants with name: {} does not exist".format(kwargs["restaurant"])
+                    "message": f"Restaurant with name: {kwargs['restaurant']} does not exist"
                 },
                 status=status.HTTP_404_NOT_FOUND
             )
@@ -169,8 +115,8 @@ class AveQuantityRetrieveView(generics.RetrieveAPIView):
     def get(self, request, *args, **kwargs):
         try:
             Restaurants.objects.get(name=self.kwargs["restaurant"])
-            queryset = self.queryset.filter(restaurant=self.kwargs["restaurant"])
-            average = sum([query.quantity for query in queryset])/len(queryset)
+            queryset = self.get_queryset().filter(restaurant=self.kwargs["restaurant"])
+            average = queryset.aggregate(Avg("quantity")).get("quantity__avg")
             return Response(
                 data={
                     "average": average
@@ -180,7 +126,7 @@ class AveQuantityRetrieveView(generics.RetrieveAPIView):
         except Restaurants.DoesNotExist:
             return Response(
                 data={
-                    "message": "Restaurants with name: {} does not exist".format(kwargs["restaurant"])
+                    "message": f"Restaurant with name: {kwargs['restaurant']} does not exist"
                 },
                 status=status.HTTP_404_NOT_FOUND
             )
