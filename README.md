@@ -3,6 +3,7 @@
 ## Table of Contents
 
 * [About the Project](#about-the-project)
+  * [Database Design](#database-design)
 * [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
   * [Installation](#installation)
@@ -29,6 +30,14 @@ This project was built using:
 * [Django](https://www.djangoproject.com/)
 * [Django REST framework](https://www.django-rest-framework.org/)
 * [djangorestframework-jwt](https://pypi.org/project/djangorestframework-jwt/)
+
+### Database Design
+
+For the purposes of this sample, the following database schema will be used.
+
+![DatabaseSchema Picture](images/DatabaseSchema.png)
+
+The User table represents the User model found in `django.contrib.auth`, while the Orders, Retaurants and MenuItems tables are defined in [`orders/models.py`](orders/models.py).
 
 ## Getting Started
 
