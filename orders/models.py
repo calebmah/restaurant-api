@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
 
@@ -19,21 +20,28 @@ class MenuItems(models.Model):
     price = models.DecimalField(max_digits=32, decimal_places=2, validators=[MinValueValidator(Decimal('0.00'))])
 
     def __str__(self):
-        return "{}: {} - {}".format(self.restaurant, self.name, self.price)
+        return f"{self.restaurant}: {self.name} - {self.price}"
 
 class Orders(models.Model):
     created = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
     restaurant = models.ForeignKey(Restaurants, on_delete=models.CASCADE, to_field="name")
-    quantity = models.PositiveIntegerField(default = 0)
+    quantity = models.PositiveIntegerField(validators=[MinValueValidator(0)])
     item = models.ForeignKey(MenuItems, on_delete=models.CASCADE, to_field="name")
-    comments = models.CharField(max_length=255, null=False, blank=True)
+    comments = models.CharField(max_length=255, blank=True)
     total_price = models.DecimalField(max_digits=32, decimal_places=2, editable = False, validators=[MinValueValidator(Decimal('0.00'))])
 
     def __str__(self):
-        return "{} Orders: {} x {} at {}".format(self.restaurant, self.quantity, self.item, self.created)
+        return f"{self.restaurant} Orders: {self.quantity} x {self.item} at {self.created}"
 
     def save(self, *args, **kwargs):
         item = MenuItems.objects.get(pk=self.item.id)
         self.total_price = self.quantity * item.price
         super().save(*args, **kwargs) 
+
+    def clean(self):
+        """
+        Check that item is sold by restaurant (for admin)
+        """  
+        if self.item.restaurant != self.restaurant:
+            raise ValidationError(f"{self.restaurant} does not sell {self.item}")
