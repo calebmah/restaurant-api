@@ -11,6 +11,7 @@
   * [Start local webserver](#start-local-webserver)
   * [Create admin user](#create-admin-user)
   * [Access django admin](#access-django-admin)
+  * [Running Tests](#running-tests)
 * [REST API documentation](#rest-api-documentation)
   * [Get JSON Web Token](#get-json-web-token)
   * [Create Order](#create-order)
@@ -109,6 +110,14 @@ The django admin page is located at `/admin/`, for example http://127.0.0.1:8000
 ![DjangoAdmin Picture](images/DjangoAdmin.png)
 
 The django admin page can be used to create, modify or delete users, restaurants, menu items or orders.
+
+### Running Tests
+
+Automated tests for the REST APIs can be found in [`orders/tests.py`](orders/tests.py). They can be run using the following:
+
+```sh
+python manage.py test
+```
 
 ## REST API documentation
 
