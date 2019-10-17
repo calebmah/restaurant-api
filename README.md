@@ -1,5 +1,7 @@
 # Restaurant REST API Sample
 
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/fb4fbd8c5509ed1c5d66#?env%5BEnvironment%5D=W3sia2V5Ijoiand0IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlfV0=)
+
 ## Table of Contents
 
 * [About the Project](#about-the-project)
@@ -63,27 +65,17 @@ Installation of the relevant packages can be done using [conda](https://docs.con
     conda activate django
     ```
 
-4. Run database migrations if necessary
+4. Create a `.env` file that contains your secret key. This key is used by django to secure signed data. An example file [`.env.example`](.env.example) is provided for reference.
+
+5. Run database migrations
 
     ```sh
     python manage.py migrate
     ```
 
-5. Create a `.env` file that contains your secret key. This key is used by django to secure signed data. An example file [`.env.example`](.env.example) is provided for reference.
-
 ## Usage
 
 This section contains information on frequent actions required for this project.
-
-### Start local webserver
-
-The default server runs on port 8000 on the IP address 127.0.0.1. For more information, refer to the [django documentation](https://docs.djangoproject.com/en/2.2/ref/django-admin/#runserver).
-
-```sh
-python manage.py runserver
-```
-
-Note that the server must be running before accessing the API endpoints or the django admin pages.
 
 ### Create admin user
 
@@ -103,13 +95,23 @@ Password (again): *********
 Superuser created successfully.
 ```
 
+### Start local webserver
+
+The default server runs on port 8000 on the IP address 127.0.0.1. For more information, refer to the [django documentation](https://docs.djangoproject.com/en/2.2/ref/django-admin/#runserver).
+
+```sh
+python manage.py runserver
+```
+
+Note that the server must be running before accessing the API endpoints or the django admin pages.
+
 ### Access django admin
 
 The django admin page is located at `/admin/`, for example http://127.0.0.1:8000/admin/. Use the credentials of the user created in the [previous step](#create-admin-user) to log in. After logging in, you will be able to access the django admin page as seen below.
 
 ![DjangoAdmin Picture](images/DjangoAdmin.png)
 
-The django admin page can be used to create, modify or delete users, restaurants, menu items or orders.
+The django admin page can be used to create, modify or delete users, restaurants, menu items or orders. To start, you probably want to create a restaurant and some menu items to assign to it.
 
 ### Running Tests
 
