@@ -447,11 +447,11 @@ This section documents all of the REST APIs currently available.
 ## **Get Average quantity of items from a Restaurant**
 
 ----
-  Gets the average quantity of items ordered by a customer from a specific restaurant using the supplied restaurant name. Bearer Token required.
+  Gets the average quantity of items ordered by a specific customer from a specific restaurant using the supplied restaurant name and customer id. Bearer Token required.
 
 * **URL**
 
-  /api/orders/stats/average-quantity/:restaurant_name
+  /api/orders/stats/average-quantity/:restaurant_name/:customer_id
 
 * **Method:**
 
@@ -461,7 +461,8 @@ This section documents all of the REST APIs currently available.
 
    **Required:**
 
-   `restaurant_name=[string]`
+   `restaurant_name=[string]` <br />
+   `customer_id=[int]`
 
 * **Success Response:**
 
@@ -484,6 +485,14 @@ This section documents all of the REST APIs currently available.
     **Content:**
 `{
     "message": "Restaurant with name: does_not_exist does not exist"
+}`
+
+  OR
+
+  * **Code:** 404 NOT FOUND <br />
+    **Content:**
+`{
+    "message": "Customer with id: does_not_exist does not exist"
 }`
 
 ## Future Improvements

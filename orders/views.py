@@ -106,7 +106,7 @@ class CostRetrieveView(generics.RetrieveAPIView):
 
 class AveQuantityRetrieveView(generics.RetrieveAPIView):
     """
-    GET orders/stats/average-quantity/<str:restaurant>
+    GET orders/stats/average-quantity/<str:restaurant>/<int:customer>/
     """   
     queryset = Orders.objects.all()
     serializer_class = OrderSerializer
@@ -115,7 +115,8 @@ class AveQuantityRetrieveView(generics.RetrieveAPIView):
     def get(self, request, *args, **kwargs):
         try:
             Restaurants.objects.get(name=self.kwargs["restaurant"])
-            queryset = self.get_queryset().filter(restaurant=self.kwargs["restaurant"])
+            User.objects.get(pk=self.kwargs["customer"])
+            queryset = self.get_queryset().filter(restaurant=self.kwargs["restaurant"], user=self.kwargs["customer"])
             average = queryset.aggregate(Avg("quantity")).get("quantity__avg")
             return Response(
                 data={
@@ -127,6 +128,13 @@ class AveQuantityRetrieveView(generics.RetrieveAPIView):
             return Response(
                 data={
                     "message": f"Restaurant with name: {kwargs['restaurant']} does not exist"
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except User.DoesNotExist:
+            return Response(
+                data={
+                    "message": f"Customer with id: {kwargs['customer']} does not exist"
                 },
                 status=status.HTTP_404_NOT_FOUND
             )

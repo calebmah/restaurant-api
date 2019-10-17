@@ -247,7 +247,8 @@ class GetAveQuantityTest(BaseViewTest):
             reverse(
                 "average-quantity",
                 kwargs={
-                    "restaurant": self.valid_restaurant
+                    "restaurant": self.valid_restaurant,
+                    "customer": self.valid_id
                 }
             )
         )
@@ -260,12 +261,28 @@ class GetAveQuantityTest(BaseViewTest):
             reverse(
                 "average-quantity",
                 kwargs={
-                    "restaurant": self.invalid_restaurant
+                    "restaurant": self.invalid_restaurant,
+                    "customer": self.valid_id
                 }
             )
         )
         self.assertEqual(
             response.data["message"],
             f"Restaurant with name: {self.invalid_restaurant} does not exist"
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        # test with a customer that does not exist
+        response = self.client.get(
+            reverse(
+                "average-quantity",
+                kwargs={
+                    "restaurant": self.valid_restaurant,
+                    "customer": self.invalid_id
+                }
+            )
+        )
+        self.assertEqual(
+            response.data["message"],
+            f"Customer with id: {self.invalid_id} does not exist"
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
